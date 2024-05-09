@@ -1,0 +1,29 @@
+/* Home.css */
+
+.home {
+    display: flex;
+    flex-direction: column; /* Ensure content stacks vertically */
+}
+
+.home__content {
+    padding-top: 100px; /* Adjust based on navbar height */
+    width: 100%;
+    text-align: center;
+}
+
+.home h1 {
+    margin-bottom: 20px;
+}
+
+.home__activity {
+    margin-top: 20px; /* Adjust margin as needed */
+    font-size: 18px; /* Adjust the font size as needed */
+    background-color: #f0f0f0; /* Light gray background for clarity */
+    border-radius: 8px; /* Rounded corners */
+    padding: 15px; /* Padding inside the activity section */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1); /* Light shadow for better visualization */
+}
+
+.home__activity p {
+    margin: 10px 0; /* Spacing between each statistic */
+}
