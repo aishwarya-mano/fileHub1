@@ -1,10 +1,10 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Link } from "react-router-dom";
 import Navbar from '../../navbar/Navbar';
 import Sidebar from '../../sidebar/Sidebar';
 import './SharedFiles.css';
-import {Link} from "react-router-dom";
 
 const SharedFiles = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -17,7 +17,7 @@ const SharedFiles = () => {
         }
 
         if (user?.email) {
-            axios.get("http://localhost:8080/file/shared-with", {
+            axios.get("http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/shared-with", {
                 params: { userEmail: user.email }
             })
                 .then(response => {
@@ -43,27 +43,27 @@ const SharedFiles = () => {
                 {sharedFiles && sharedFiles.length > 0 ? (
                     <table className="file-table">
                         <thead>
-                        <tr>
-                            <th>File Name</th>
-                            <th>File Type</th>
-                            <th>Uploaded At</th>
-                            <th>Last Edited</th>
-                            <th>File Size</th>
-                        </tr>
+                            <tr>
+                                <th>File Name</th>
+                                <th>File Type</th>
+                                <th>Uploaded At</th>
+                                <th>Last Edited</th>
+                                <th>File Size</th>
+                            </tr>
                         </thead>
                         <tbody>
-                        {sharedFiles.map(sharedFile => (
-                            <tr key={sharedFile.id}>
-                                {sharedFile.file.fileType === "pdf" ?
-                                    <td><Link to={`/view/pdf/${sharedFile.file.fileId}`}>{sharedFile.file.fileName}</Link></td> :
-                                    <td><Link to={`/edit/${sharedFile.file.fileId}`}>{sharedFile.file.fileName}</Link></td>
-                                }
-                                <td>{sharedFile.file.fileType}</td>
-                                <td>{new Date(sharedFile.file.uploadedAt).toLocaleString()}</td>
-                                <td>{new Date(sharedFile.file.lastEditedAt).toLocaleString()}</td>
-                                <td>{sharedFile.file.fileSize}</td>
-                            </tr>
-                        ))}
+                            {sharedFiles.map(sharedFile => (
+                                <tr key={sharedFile.id}>
+                                    {sharedFile.file.fileType === "pdf" ?
+                                        <td><Link to={`/view/pdf/${sharedFile.file.fileId}`}>{sharedFile.file.fileName}</Link></td> :
+                                        <td><Link to={`/edit/${sharedFile.file.fileId}`}>{sharedFile.file.fileName}</Link></td>
+                                    }
+                                    <td>{sharedFile.file.fileType}</td>
+                                    <td>{new Date(sharedFile.file.uploadedAt).toLocaleString()}</td>
+                                    <td>{new Date(sharedFile.file.lastEditedAt).toLocaleString()}</td>
+                                    <td>{sharedFile.file.fileSize}</td>
+                                </tr>
+                            ))}
                         </tbody>
                     </table>
                 ) : !isLoading && (

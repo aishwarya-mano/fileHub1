@@ -1,18 +1,15 @@
-import React, { useState, useEffect } from 'react';
-import './FileEditor.css'
+import axios from "axios";
+import React, { useEffect, useState } from 'react';
 import ReactQuill from 'react-quill';
 import 'react-quill/dist/quill.snow.css';
+import { useParams } from "react-router-dom";
 import Navbar from "../navbar/Navbar";
 import Sidebar from "../sidebar/Sidebar";
-import axios from "axios";
-import {useParams} from "react-router-dom";
-import JSZip from 'jszip';
-import {xml2js, xml2json} from 'xml-js';
-import mammoth from 'mammoth';
+import './FileEditor.css';
 
 
 const FileEditor = () => {
-    const {fileId} = useParams();
+    const { fileId } = useParams();
     const [content, setContent] = useState('<html><strong>Loading File..</strong></html>');
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
     const [file, setFile] = useState([]);
@@ -23,7 +20,7 @@ const FileEditor = () => {
         setIsConverting(true);
         const decodedContent = encodeURIComponent(content); // Decode HTML content
 
-        axios.post(`http://localhost:8080/file/convert/html-to-docx/${fileId}`, decodedContent)
+        axios.post(`http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/convert/html-to-docx/${fileId}`, decodedContent)
             .then(response => {
                 console.log(response.data);
                 window.alert(response.data);
@@ -66,12 +63,12 @@ const FileEditor = () => {
     const modules = {
         toolbar: {
             container: [
-                [{'header': '1'}, {'header': '2'}, {'font': []}],
-                [{size: []}],
+                [{ 'header': '1' }, { 'header': '2' }, { 'font': [] }],
+                [{ size: [] }],
                 ['bold', 'italic', 'underline', 'strike', 'blockquote'],
-                [{'list': 'ordered'}, {'list': 'bullet'}, {'indent': '-1'}, {'indent': '+1'}],
+                [{ 'list': 'ordered' }, { 'list': 'bullet' }, { 'indent': '-1' }, { 'indent': '+1' }],
                 ['link', 'image', 'color'],
-                [{'align': []}],
+                [{ 'align': [] }],
                 [{ margin: [] }],
                 ['clean']
             ],
@@ -84,10 +81,10 @@ const FileEditor = () => {
         }
     }, [cloudFrontURL]);
 
-    useEffect( () => {
+    useEffect(() => {
         const fetchFile = async () => {
             try {
-                const response = await axios.get(`http://localhost:8080/file/${fileId}`);
+                const response = await axios.get(`http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/${fileId}`);
                 setFile(response.data);
                 setCloudFrontURL(response.data.fileURL);
 
@@ -101,7 +98,7 @@ const FileEditor = () => {
     }, [fileId]);
 
     const fetchFileContent = () => {
-        axios.get(`http://localhost:8080/file/convert/docx-to-html/${fileId}`)
+        axios.get(`http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/convert/docx-to-html/${fileId}`)
             .then(response => {
                 console.log(response);
                 setContent(response.data);
@@ -113,18 +110,18 @@ const FileEditor = () => {
 
     return (
         <div className="home">
-            <Navbar toggleSidebar={toggleSidebar}/>
-            <Sidebar isOpen={isSidebarOpen}/>
+            <Navbar toggleSidebar={toggleSidebar} />
+            <Sidebar isOpen={isSidebarOpen} />
             <div className="home__content">
 
-            <ReactQuill className="quill"
-                theme="snow"
-                value={content}
-                formats={formats}
-                        modules={modules}
-                onChange={(value) => setContent(value)}
-                style={{ height: '700px', width: '100%' }}
-            />
+                <ReactQuill className="quill"
+                    theme="snow"
+                    value={content}
+                    formats={formats}
+                    modules={modules}
+                    onChange={(value) => setContent(value)}
+                    style={{ height: '700px', width: '100%' }}
+                />
                 <button className="save-button" onClick={saveFileContent}>{isConverting ? 'Saving...' : 'Save'}</button>
             </div>
         </div>

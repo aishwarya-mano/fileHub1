@@ -1,11 +1,11 @@
-import React, { useEffect, useState } from 'react';
-import axios from 'axios';
 import { useAuth0 } from '@auth0/auth0-react';
+import axios from 'axios';
+import React, { useEffect, useState } from 'react';
+import { Bar, BarChart, CartesianGrid, Tooltip, XAxis, YAxis } from 'recharts';
+import FeaturesBlock from "../featureBlock/FeaturesBlock";
 import Navbar from '../navbar/Navbar';
 import Sidebar from '../sidebar/Sidebar';
-import { BarChart, Bar, XAxis, YAxis, Tooltip, CartesianGrid } from 'recharts';
 import './Home.css';
-import FeaturesBlock from "../featureBlock/FeaturesBlock";
 
 const Home = () => {
     const [isSidebarOpen, setIsSidebarOpen] = useState(false);
@@ -26,7 +26,7 @@ const Home = () => {
             try {
                 const userEmail = user?.email;
                 if (userEmail) {
-                    const response = await axios.get('http://localhost:8080/file/user/stats', {
+                    const response = await axios.get('http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/user/stats', {
                         params: { email: userEmail }
                     });
                     setUserStats({
@@ -66,7 +66,7 @@ const Home = () => {
                     <BarChart width={500} height={300} data={data}>
                         <CartesianGrid strokeDasharray="3 3" />
                         <XAxis dataKey="name" />
-                        <YAxis domain={[0, 'dataMax']} interval={1}/>
+                        <YAxis domain={[0, 'dataMax']} interval={1} />
                         <Tooltip />
                         <Bar dataKey="count" fill="#8884d8" />
                     </BarChart>
