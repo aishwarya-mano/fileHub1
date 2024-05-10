@@ -44,7 +44,7 @@ const MyFiles = () => {
     const [uploadFile, setUploadFile] = useState(null);
     const [deleteSuccessMessage, setDeleteSuccessMessage] = useState('');
     const [uploadSuccessMessage, setUploadSuccessMessage] = useState('');
-    const {user} = useAuth0();
+    const { user } = useAuth0();
     const fileInputRef = useRef(null);
     const [shareSuccessMessage, setShareSuccessMessage] = useState('');
     const [pdfViewModalOpen, setPdfViewModalOpen] = useState(false);
@@ -55,7 +55,7 @@ const MyFiles = () => {
 
     useEffect(() => {
         // Fetch files from backend API
-        axios.get("http://localhost:8080/file/all", {
+        axios.get("http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/all", {
             params: {
                 userEmail: user.email
             }
@@ -85,7 +85,7 @@ const MyFiles = () => {
 
 
     const handleShare = (email, file) => {
-        const url = `http://localhost:8080/file/${file.fileId}/share?userEmail=${encodeURIComponent(email)}`;
+        const url = `http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/${file.fileId}/share?userEmail=${encodeURIComponent(email)}`;
 
         axios.post(url)
             .then(response => {
@@ -114,7 +114,7 @@ const MyFiles = () => {
         const formData = new FormData();
         formData.append("file", file);
 
-        axios.post(`http://localhost:8080/file/${user.email}/upload/`, formData, {
+        axios.post(`http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/${user.email}/upload/`, formData, {
             headers: {
                 "Content-Type": "multipart/form-data"
             }
@@ -141,7 +141,7 @@ const MyFiles = () => {
     const handleDelete = (fileId) => {
         setIsLoading(true);
 
-        axios.delete(`http://localhost:8080/file/${user.email}/${fileId}`)
+        axios.delete(`http://ec2-54-242-165-167.compute-1.amazonaws.com:8080/file/${user.email}/${fileId}`)
             .then(() => {
                 setFiles(files.filter(file => file.fileId !== fileId));
                 setDeleteSuccessMessage('File deleted successfully.');
@@ -158,7 +158,7 @@ const MyFiles = () => {
 
     const handleSummarize = (file) => {
         setIsLoading(true);
-        const url = `http://127.0.0.1:5000/tldr`;
+        const url = `https://ezldc7p620.execute-api.us-east-1.amazonaws.com/Prod/tldr`;
         axios.get(url, {
             params: {
                 fileUrl: file.fileURL
@@ -184,7 +184,7 @@ const MyFiles = () => {
     };
 
     // Modal Component
-    const Modal = ({isOpen, onClose, content}) => {
+    const Modal = ({ isOpen, onClose, content }) => {
         if (!isOpen) return null;
         return (
             <div className="modal-backdrop">
@@ -199,8 +199,8 @@ const MyFiles = () => {
 
     return (
         <div className="home">
-            <Navbar toggleSidebar={toggleSidebar}/>
-            <Sidebar isOpen={isSidebarOpen}/>
+            <Navbar toggleSidebar={toggleSidebar} />
+            <Sidebar isOpen={isSidebarOpen} />
             <div className="home__content">
                 {isLoading && (
                     <div className="loading-overlay">
@@ -213,7 +213,7 @@ const MyFiles = () => {
                         type="file"
                         ref={fileInputRef}
                         onChange={handleFileChange}
-                        style={{display: 'none'}}
+                        style={{ display: 'none' }}
                     />
                     <button className="upload-btn" onClick={handleFileUploadClick}>
                         Upload File
@@ -227,22 +227,22 @@ const MyFiles = () => {
                     {files.map(file => (
                         <div key={file.id} className="file-block">
                             <div className="file-header">
-                                { file.fileType === "pdf" ? <Link to={`/view/pdf/${file.fileId}`}><img src="/images/pdf.png" alt="PDF icon"/></Link> :
-                                    <Link to={`/edit/${file.fileId}`}><img src="/images/icons8-word-file-96.png" alt="DOC icon"/></Link> }
+                                {file.fileType === "pdf" ? <Link to={`/view/pdf/${file.fileId}`}><img src="/images/pdf.png" alt="PDF icon" /></Link> :
+                                    <Link to={`/edit/${file.fileId}`}><img src="/images/icons8-word-file-96.png" alt="DOC icon" /></Link>}
                                 <div className="file-info">
                                     <p>{file.fileName}</p>
                                     <p>Last Edited: {file.lastEditedAt}</p>
                                 </div>
                             </div>
                             <div className="button-container">
-                                <button className="share-btn"  onClick={() => handleShareButtonClick(file)}><img src="/images/icons8-share-30.png" alt="Share" /></button>
+                                <button className="share-btn" onClick={() => handleShareButtonClick(file)}><img src="/images/icons8-share-30.png" alt="Share" /></button>
                                 <button className="summarize-btn" onClick={() => handleSummarize(file)}><img src="/images/icons8-chatgpt-30.png" alt="Share" /></button>
                                 <button className="delete-btn" onClick={() => handleDelete(file.fileId)}><img src="/images/icons8-delete-36.png" alt="Share" /></button>
                             </div>
                         </div>
                     ))}
                 </div>
-                <Modal isOpen={isModalOpen} onClose={closeModal} content={modalContent}/>
+                <Modal isOpen={isModalOpen} onClose={closeModal} content={modalContent} />
                 {shareModalOpen && (
                     <ShareModal
                         isOpen={shareModalOpen}
